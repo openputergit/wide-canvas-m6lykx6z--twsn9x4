@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Browser</title>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white">
+    <div x-data="movieApp()" class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="bg-gray-900 border-b border-gray-800 fixed w-full z-50">
+            <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+                <h1 class="text-red-600 text-2xl font-bold">MovieBrowser</h1>
+                <div class="flex items-center space-x-4">
+                    <input 
+                        type="search" 
+                        x-model="searchQuery"
+                        @input="searchMovies()"
+                        placeholder="Search movies..."
+                        class="bg-gray-800 text-sm rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-600"
+                    >
+                    <button class="bg-red-600 px-4 py-2 rounded hover:bg-red-700 transition">Sign In</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 pt-24">
+            <!-- Featured Section -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-semibold mb-6">Featured Movies</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <template x-for="movie in featuredMovies" :key="movie.id">
+                        <div class="bg-gray-800 rounded-lg overflow-hidden hover:scale-105 transition duration-300">
+                            <img :src="movie.image" :alt="movie.title" class="w-full h-64 object-cover">
+                            <div class="p-4">
+                                <h3 x-text="movie.title" class="font-semibold mb-2"></h3>
+                                <p x-text="movie.year" class="text-gray-400"></p>
+                                <button 
+                                    @click="toggleWatchlist(movie)"
+                                    class="mt-3 text-sm bg-red-600 px-4 py-2 rounded hover:bg-red-700 transition"
+                                    x-text="isInWatchlist(movie) ? 'Remove from Watchlist' : 'Add to Watchlist'"
+                                ></button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function movieApp() {
+            return {
+                searchQuery: '',
+                watchlist: [],
+                featuredMovies: [
+                    {
+                        id: 1,
+                        title: "The Adventure Begins",
+                        year: "2023",
+                        image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=800"
+                    },
+                    {
+                        id: 2,
+                        title: "City Lights",
+                        year: "2023",
+                        image: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=800"
+                    },
+                    {
+                        id: 3,
+                        title: "Ocean's Mystery",
+                        year: "2023",
+                        image: "https://images.unsplash.com/photo-1551972873-b7e8754e8e26?auto=format&fit=crop&w=800"
+                    },
+                    {
+                        id: 4,
+                        title: "Mountain Peak",
+                        year: "2023",
+                        image: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?auto=format&fit=crop&w=800"
+                    }
+                ],
+                
+                searchMovies() {
+                    // Simulated search functionality
+                    if (this.searchQuery.length > 2) {
+                        this.featuredMovies = this.featuredMovies.filter(movie => 
+                            movie.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+                        );
+                    }
+                },
+
+                toggleWatchlist(movie) {
+                    const index = this.watchlist.findIndex(item => item.id === movie.id);
+                    if (index === -1) {
+                        this.watchlist.push(movie);
+                    } else {
+                        this.watchlist.splice(index, 1);
+                    }
+                },
+
+                isInWatchlist(movie) {
+                    return this.watchlist.some(item => item.id === movie.id);
+                }
+            }
+        }
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
